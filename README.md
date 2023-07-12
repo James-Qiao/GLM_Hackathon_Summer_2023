@@ -51,7 +51,7 @@ Meanwhile, I learned the basic procedures of scRNA-seq analysis and got familiar
 #### 1.1 Variables
    
    **features:** 
-    $\bm{x} = \begin{bmatrix}
+    $\boldsymbol{x} = \begin{bmatrix}
     x_1\\
     x_2\\
     ...\\
@@ -60,7 +60,7 @@ Meanwhile, I learned the basic procedures of scRNA-seq analysis and got familiar
     , where $x_i = \left(x_{i1}, x_{i2}, ..., x_{in}\right)$ is *n* dimentional
 
    **parameters:**
-   $\bm{\beta} = \begin{bmatrix}
+   $\boldsymbol{\beta} = \begin{bmatrix}
     \beta_1\\
     \beta_2\\
     ...\\
@@ -68,22 +68,22 @@ Meanwhile, I learned the basic procedures of scRNA-seq analysis and got familiar
     \end{bmatrix}$
 
    **observed variables:**
-   $\bm{y} = \begin{bmatrix}
+   $\boldsymbol{y} = \begin{bmatrix}
     y_1\\
     y_2\\
     ...\\
     y_p 
     \end{bmatrix}$
 
-   $\eta = \bm{\beta^Tx} = \beta_1x_1 + \beta_2x_2 + ... + \beta_px_p$
+   $\eta = \boldsymbol{\beta^Tx} = \beta_1x_1 + \beta_2x_2 + ... + \beta_px_p$
 
 #### 1.2 The logistic function (sigmoid function)
 
    $$\sigma\left(z\right) = \frac{1}{1 + exp\left(-z\right)}$$
 
-  The range of $\sigma\left(z\right)$ is $\left[0, 1\right]$, which converts the dicision boundary $\bm{\beta^Tx} \in \left[-\infty, +\infty\right]$ to a probability:
+  The range of $\sigma\left(z\right)$ is $\left[0, 1\right]$, which converts the dicision boundary $\boldsymbol{\beta^Tx} \in \left[-\infty, +\infty\right]$ to a probability:
 
-  $$P\left(y = 1 | \beta, x\right) = \sigma\left(\bm{\beta^Tx}\right)$$
+  $$P\left(y = 1 | \beta, x\right) = \sigma\left(\boldsymbol{\beta^Tx}\right)$$
   which is desired for prediction.
 
   The deision boundary is
@@ -99,8 +99,8 @@ Meanwhile, I learned the basic procedures of scRNA-seq analysis and got familiar
 
   $$\hat{y} = \left\{
     \begin{aligned}
-    1, \quad if \ \bm{\beta^Tx} \geq 0 \\
-    0, \quad if \ \bm{\beta^Tx} < 0
+    1, \quad if \ \boldsymbol{\beta^Tx} \geq 0 \\
+    0, \quad if \ \boldsymbol{\beta^Tx} < 0
     \end{aligned}
   \right.$$
 
