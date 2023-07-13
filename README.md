@@ -128,23 +128,23 @@ Meanwhile, I learned the basic procedures of scRNA-seq analysis and got familiar
 #### 1.3 Log likelihood
 
 **The likelihood function:**
-$$
+```math
 \begin{split}
 L(\beta) & = \prod_{i=1}^{N} Ber(y_i | \mu_i = \sigma(\boldsymbol{\beta^Tx_i}))\\
 & = \prod_{i=1}^{N} P(y_i = 1 | \beta, x_i)^{y_i}
 (1 - P(y_i = 1 | \beta, x_i))^{y_i}
 \end{split}
-$$
+```
 
 **Log likelihood:**
-$$
+ ```math
 LL(\beta) = \sum_{i=1}^{N} [ y_i log(\mu_i) + (1 - y_i) log(1 - \mu_i)]
-$$
+ ```
 
 **Negative log likelihood, scaled by dataset size N:**
-$$
+```math
 NLL(\beta) = - \frac{1}{N} \sum_{i=1}^{N} [ y_i log(\mu_i) + (1 - y_i) log(1 - \mu_i)]
-$$
+```
 which can be minimized to find $\beta$.
 
 ### 2. Negative binomial regression
