@@ -51,31 +51,45 @@ Meanwhile, I learned the basic procedures of scRNA-seq analysis and got familiar
 #### 1.1 Variables
    
    **features:** 
-    $\boldsymbol{x} = \begin{bmatrix}
+
+    ```math
+    \boldsymbol{x} = \begin{bmatrix}
     x_1\\
     x_2\\
-    ...\\
+    \vdots\\
     x_p 
-    \end{bmatrix}$
-    , where $x_i = \left(x_{i1}, x_{i2}, ..., x_{in}\right)$ is *n* dimentional
+    \end{bmatrix}
+    ```
+
+    where $x_i = \left(x_{i1}, x_{i2}, ..., x_{in}\right)$ is *n* dimentional
 
    **parameters:**
+
+   ```math
    $\boldsymbol{\beta} = \begin{bmatrix}
     \beta_1\\
     \beta_2\\
-    ...\\
-    \beta_p 
-    \end{bmatrix}$
+    \vdots\\
+    \beta_p
+    \end{bmatrix}
+    ```
 
    **observed variables:**
-   $\boldsymbol{y} = \begin{bmatrix}
+
+   ```math
+   \boldsymbol{y} = \begin{bmatrix}
     y_1\\
     y_2\\
-    ...\\
+    \vdots\\
     y_p 
-    \end{bmatrix}$
+    \end{bmatrix}
+    ```
+   
+   **linear predictor:**
 
-   $\eta = \boldsymbol{\beta^Tx} = \beta_1x_1 + \beta_2x_2 + ... + \beta_px_p$
+   ```math
+   \eta = \boldsymbol{\beta^Tx} = \beta_1x_1 + \beta_2x_2 + ... + \beta_px_p
+   ```
 
 #### 1.2 The logistic function (sigmoid function)
 
@@ -87,22 +101,26 @@ Meanwhile, I learned the basic procedures of scRNA-seq analysis and got familiar
   which is desired for prediction.
 
   The deision boundary is
-  
-  $$\hat{y} = \left\{
+
+  ```math
+  \hat{y} = \left\{
     \begin{aligned}
     1, \quad if \ P\left(y = 1 | \beta, x\right) \geq 0.5 \\
     0, \quad if \ P\left(y = 1 | \beta, x\right) < 0.5
     \end{aligned}
-  \right.$$
+  \right.
+  ```
 
   As $\sigma\left(0\right) = 0.5$, this is equivalent to 
 
-  $$\hat{y} = \left\{
+  ```math
+  \hat{y} = \left\{
     \begin{aligned}
     1, \quad if \ \boldsymbol{\beta^Tx} \geq 0 \\
     0, \quad if \ \boldsymbol{\beta^Tx} < 0
     \end{aligned}
-  \right.$$
+  \right.
+  ```
 
   Additionally, the derivative of $\sigma\left(z\right)$ is 
 
