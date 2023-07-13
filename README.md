@@ -57,10 +57,10 @@ Meanwhile, I learned the basic procedures of scRNA-seq analysis and got familiar
    x_1\\
    x_2\\
    \vdots\\
-   x_p 
+   x_n 
    \end{bmatrix}
    ```
-   where $x_i = \left(x_{i1}, x_{i2}, ..., x_{in}\right)$ is *n* dimentional
+   where $x_i = \left(x_{i1}, x_{i2}, ..., x_{ip}\right)$ is *p* dimentional
 
    **parameters:**
    ```math
@@ -68,9 +68,9 @@ Meanwhile, I learned the basic procedures of scRNA-seq analysis and got familiar
     \beta_1\\
     \beta_2\\
     \vdots\\
-    \beta_p
+    \beta_n
     \end{bmatrix}
-  ```
+   ```
 
    **observed variables:**
    ```math
@@ -78,7 +78,7 @@ Meanwhile, I learned the basic procedures of scRNA-seq analysis and got familiar
     y_1\\
     y_2\\
     \vdots\\
-    y_p 
+    y_n
     \end{bmatrix}
    ```
    
@@ -92,9 +92,9 @@ Meanwhile, I learned the basic procedures of scRNA-seq analysis and got familiar
 
    $$\sigma\left(z\right) = \frac{1}{1 + exp\left(-z\right)}$$
 
-  The range of $\sigma\left(z\right)$ is $\left[0, 1\right]$, which converts the dicision boundary $\boldsymbol{\beta^Tx} \in \left[-\infty, +\infty\right]$ to a probability:
+  The range of $\sigma(z)$ is $\left[0, 1\right]$, which converts the dicision boundary $\boldsymbol{\beta^Tx} \in \left[-\infty, +\infty\right]$ to a probability:
 
-  $$P\left(y = 1 | \beta, x\right) = \sigma\left(\boldsymbol{\beta^Tx}\right)$$
+  $$P(y = 1 | \beta, x) = \sigma\left(\boldsymbol{\beta^Tx}\right)$$
   which is desired for prediction.
 
   The deision boundary is
@@ -108,7 +108,7 @@ Meanwhile, I learned the basic procedures of scRNA-seq analysis and got familiar
   \right.
   ```
 
-  As $\sigma\left(0\right) = 0.5$, this is equivalent to 
+  As $\sigma(0) = 0.5$, this is equivalent to 
 
   ```math
   \hat{y} = \left\{
@@ -119,16 +119,33 @@ Meanwhile, I learned the basic procedures of scRNA-seq analysis and got familiar
   \right.
   ```
 
-  Additionally, the derivative of $\sigma\left(z\right)$ is 
+  Additionally, the derivative of $\sigma(z)$ is 
 
-  $$\sigma^\prime\left(z\right) = \sigma\left(z\right) \cdot \left(1 - \sigma\left(z\right)\right) $$
+  $$\sigma^\prime(z) = \sigma(z) \cdot (1 - \sigma(z)) $$
 
   which will be useful in deriving the gradient of the loss function.
 
 #### 1.3 Log likelihood
-  
 
+**The likelihood function:**
+$$
+\begin{split}
+L(\beta) & = \prod_{i=1}^{N} Ber(y_i | \mu_i = \sigma(\boldsymbol{\beta^Tx_i}))\\
+& = \prod_{i=1}^{N} P(y_i = 1 | \beta, x_i)^{y_i}
+(1 - P(y_i = 1 | \beta, x_i))^{y_i}
+\end{split}
+$$
 
+**Log likelihood:**
+$$
+LL(\beta) = \sum_{i=1}^{N} [ y_i log(\mu_i) + (1 - y_i) log(1 - \mu_i)]
+$$
+
+**Negative log likelihood, scaled by dataset size N:**
+$$
+NLL(\beta) = - \frac{1}{N} \sum_{i=1}^{N} [ y_i log(\mu_i) + (1 - y_i) log(1 - \mu_i)]
+$$
+which can be minimized to find $\beta$.
 
 ### 2. Negative binomial regression
 
