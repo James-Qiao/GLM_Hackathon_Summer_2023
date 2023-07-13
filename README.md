@@ -51,31 +51,28 @@ Meanwhile, I learned the basic procedures of scRNA-seq analysis and got familiar
 #### 1.1 Variables
    
    **features:** 
-
-    ```math
-    \boldsymbol{x} = \begin{bmatrix}
-    x_1\\
-    x_2\\
-    \vdots\\
-    x_p 
-    \end{bmatrix}
-    ```
-
+   ```math
+   \boldsymbol{x} = 
+   \begin{bmatrix}
+   x_1\\
+   x_2\\
+   \vdots\\
+   x_p 
+   \end{bmatrix}
+   ```
     where $x_i = \left(x_{i1}, x_{i2}, ..., x_{in}\right)$ is *n* dimentional
 
    **parameters:**
-
    ```math
-   $\boldsymbol{\beta} = \begin{bmatrix}
+    \boldsymbol{\beta} = \begin{bmatrix}
     \beta_1\\
     \beta_2\\
     \vdots\\
     \beta_p
     \end{bmatrix}
-    ```
+  ```
 
    **observed variables:**
-
    ```math
    \boldsymbol{y} = \begin{bmatrix}
     y_1\\
@@ -85,8 +82,8 @@ Meanwhile, I learned the basic procedures of scRNA-seq analysis and got familiar
     \end{bmatrix}
     ```
    
+   
    **linear predictor:**
-
    ```math
    \eta = \boldsymbol{\beta^Tx} = \beta_1x_1 + \beta_2x_2 + ... + \beta_px_p
    ```
