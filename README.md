@@ -60,7 +60,7 @@ Meanwhile, I learned the basic procedures of scRNA-seq analysis and got familiar
    x_p 
    \end{bmatrix}
    ```
-    where $x_i = \left(x_{i1}, x_{i2}, ..., x_{in}\right)$ is *n* dimentional
+   where $x_i = \left(x_{i1}, x_{i2}, ..., x_{in}\right)$ is *n* dimentional
 
    **parameters:**
    ```math
@@ -80,7 +80,7 @@ Meanwhile, I learned the basic procedures of scRNA-seq analysis and got familiar
     \vdots\\
     y_p 
     \end{bmatrix}
-    ```
+   ```
    
    
    **linear predictor:**
