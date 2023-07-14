@@ -12,6 +12,7 @@ Data science works on GLM and scRNA-seq during summer intern 2023
       - [1.1 Variables](#11-variables)
       - [1.2 The logistic function (sigmoid function)](#12-the-logistic-function-sigmoid-function)
       - [1.3 Log likelihood](#13-log-likelihood)
+      - [1.4 Gradient descent](#14-gradient-descent)
     - [2. Negative binomial regression](#2-negative-binomial-regression)
     - [3. NB regression test on datasets](#3-nb-regression-test-on-datasets)
     - [4. Cell clustering and finding marker genes with scanpy](#4-cell-clustering-and-finding-marker-genes-with-scanpy)
@@ -47,6 +48,8 @@ Meanwhile, I learned the basic procedures of scRNA-seq analysis and got familiar
 
 
 ### 1. Logistic regression from scratch
+
+In this part, I implemented logistic regression from scratch by coding the log likelihood function and the gradient descent. This model is compared with [the logistic regression model in sci-kit learn](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html).
 
 #### 1.1 Variables
    
@@ -146,6 +149,19 @@ LL(\beta) = \sum_{i=1}^{N} [ y_i log(\mu_i) + (1 - y_i) log(1 - \mu_i)]
 NLL(\beta) = - \frac{1}{N} \sum_{i=1}^{N} [ y_i log(\mu_i) + (1 - y_i) log(1 - \mu_i)]
 ```
 which can be minimized to find $\beta$.
+
+**My implementation for log likelihood:**
+```python
+def LL(model, parameters):
+    y_pred = sigmoid(np.dot(model.X, parameters))
+    log_l = model.Y * np.log(y_pred) + (1 - model.Y) * np.log(1 - y_pred)
+    return np.sum(log_l)
+```
+to make the LL comparable with the sci-kit learn model, the direct $LL(\beta)$ is used instead of $NLL(\beta)$.
+
+#### 1.4 Gradient descent
+
+
 
 ### 2. Negative binomial regression
 
