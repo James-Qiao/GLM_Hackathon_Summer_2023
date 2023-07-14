@@ -1,9 +1,11 @@
 # GLM_Hackathon_Summer_2023
+
 Data science works on GLM and scRNA-seq during summer intern 2023
 
 ---
 
 ## Contents
+
 - [GLM\_Hackathon\_Summer\_2023](#glm_hackathon_summer_2023)
   - [Contents](#contents)
   - [Part 1: Overview](#part-1-overview)
@@ -25,7 +27,7 @@ Data science works on GLM and scRNA-seq during summer intern 2023
 
 This is a repository for part of my work during the summer research internship 2023, supervised by Prof. Huang Yuanhua.
 
-During the first one month and a half, I learned [foundamental data science skills][1] and read some materials on machine learning[^1][^2]. I have built a logistic regression model from scratch by implementing gradient descent, and a negative binomial regression model which fits the parameters $\beta$ and dispersion factor $\phi$ by using the [optimize function by statsmodels][2].
+During the first one month and a half, I learned [fundamental data science skills][1] and read some materials on machine learning[^1][^2]. I have built a logistic regression model from scratch by implementing gradient descent, and a negative binomial regression model which fits the parameters $\beta$ and dispersion factor $\phi$ by using the [optimize function by statsmodels][2].
 
 Additionally, I used my models to analyze some public datasets and got decent results, which are introduced in detail in [Part 2: File documentations](#part-2-file-documentations).
 
@@ -63,7 +65,7 @@ In this part, I implemented logistic regression from scratch by coding the log l
    x_n 
    \end{bmatrix}
    ```
-   where $x_i = \left(x_{i1}, x_{i2}, ..., x_{ip}\right)$ is *p* dimentional
+   where $x_i = \left(x_{i1}, x_{i2}, ..., x_{ip}\right)$ is *p* dimensional
 
    **parameters:**
    ```math
@@ -93,14 +95,15 @@ In this part, I implemented logistic regression from scratch by coding the log l
 
 #### 1.2 The logistic function (sigmoid function)
 
-   $$\sigma\left(z\right) = \frac{1}{1 + exp\left(-z\right)}$$
+The linear predictor $\eta$ has a range of $\left[-\infty, +\infty\right]$. However, we hope that the model can predict the **probability** of $y = 1$. And probabilities have a range of $[0, 1]$. Therefore, a function is used to convert $\boldsymbol{\beta^Tx} \in \left[-\infty, +\infty\right]$ to $P \in \left[0, 1\right]$:
 
-  The range of $\sigma(z)$ is $\left[0, 1\right]$, which converts the dicision boundary $\boldsymbol{\beta^Tx} \in \left[-\infty, +\infty\right]$ to a probability:
+   $$\sigma\left(z\right) = \frac{1}{1 + \exp\left(-z\right)}$$
+
+The probability therefore is:
 
   $$P(y = 1 | \beta, x) = \sigma\left(\boldsymbol{\beta^Tx}\right)$$
-  which is desired for prediction.
 
-  The deision boundary is
+  The decision boundary is
 
   ```math
   \hat{y} = \left\{
@@ -126,9 +129,18 @@ In this part, I implemented logistic regression from scratch by coding the log l
 
   $$\sigma^\prime(z) = \sigma(z) \cdot (1 - \sigma(z)) $$
 
-  which will be useful in deriving the gradient of the loss function.
+  As we will see in the next section, $\sigma(z)$ will be used in the log likelihood function. To derive the gradient of the log likelihood, which will be used in gradient descent, $\sigma^\prime(z)$ is needed.
+
+  This is how the sigmoid function is implemented in Python:
+  ```python
+  def sigmoid(z):
+      s = 1 / (1 + np.exp(-z))
+      return s
+  ```
 
 #### 1.3 Log likelihood
+
+The log likelihood is a measure of how good a model is, or how probable a model is to predict the observed data[^3]. It is a function of parameters $\beta$, thus we can determine the optimized $\beta$ by finding the maximum of the log likelihood.
 
 **The likelihood function:**
 ```math
@@ -141,27 +153,45 @@ L(\beta) & = \prod_{i=1}^{N} Ber(y_i | \mu_i = \sigma(\boldsymbol{\beta^Tx_i}))\
 
 **Log likelihood:**
  ```math
-LL(\beta) = \sum_{i=1}^{N} [ y_i log(\mu_i) + (1 - y_i) log(1 - \mu_i)]
+LL(\beta) = \sum_{i=1}^{N} [ y_i \log(\mu_i) + (1 - y_i) \log(1 - \mu_i)]
  ```
 
 **Negative log likelihood, scaled by dataset size N:**
 ```math
-NLL(\beta) = - \frac{1}{N} \sum_{i=1}^{N} [ y_i log(\mu_i) + (1 - y_i) log(1 - \mu_i)]
+NLL(\beta) = - \frac{1}{N} \sum_{i=1}^{N} [ y_i \log(\mu_i) + (1 - y_i) \log(1 - \mu_i)]
 ```
 which can be minimized to find $\beta$.
 
-**My implementation for log likelihood:**
+My implementation for log likelihood:
 ```python
 def LL(model, parameters):
-    y_pred = sigmoid(np.dot(model.X, parameters))
+    y_pred = sigmoid(np.dot(model.X, parameters)) # mu
     log_l = model.Y * np.log(y_pred) + (1 - model.Y) * np.log(1 - y_pred)
     return np.sum(log_l)
 ```
 to make the LL comparable with the sci-kit learn model, the direct $LL(\beta)$ is used instead of $NLL(\beta)$.
 
+[^3]: ["Maximum likelihood estimation", Wikipedia](https://en.wikipedia.org/wiki/Maximum_likelihood_estimation)
+
 #### 1.4 Gradient descent
 
+Unfortunately, unlike linear regression, the $LL(\beta)$ of logistic regression has no analytical solution (or to be more specific, $LL^\prime(\beta) = 0$ has no analytical solution). Thus, we use a numerical way to approximate its maximum.
 
+As its name suggests, gradient descent simply means descending along the gradient. This is like going down a hill, by taking each step, you are a little bit closer to the bottom of the valley.
+
+Firstly, we need to have the gradient of $LL(\beta)$.
+
+```math
+\begin{split}
+LL^\prime(\beta) 
+& = (\sum_{i=1}^{N} [ y_i \log(\mu_i) + (1 - y_i) \log(1 - \mu_i)])^\prime \\
+& = \sum_{i=1}^{N} [y_i\frac{\sigma(\beta^Tx_i)(1 - \sigma(\beta^Tx_i))}{\sigma(\beta^Tx_i)}x_i + (1 - y_i)\frac{-\sigma(\beta^Tx_i)(1 - \sigma(\beta^Tx_i))}{1 - \sigma(\beta^Tx_i)}x_i] \\
+& = \sum_{i=1}^{N} x_i(y_i - \sigma(\beta^Tx_i)) \\
+& = \sum_{i=1}^{N} x_i(y_i - \hat{y})
+\end{split}
+```
+
+This is done simply by applying the chain rule to take the derivative of $LL(\beta$).
 
 ### 2. Negative binomial regression
 
