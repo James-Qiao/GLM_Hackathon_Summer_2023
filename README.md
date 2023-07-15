@@ -215,7 +215,10 @@ def gradient_descent(model, n_iter, learning_rate):
     return parameters, LL_record
 ```
 
-An array `LL_record` is used to store the function value of $LL(\boldsymbol{\beta}$) after each iteration, which is useful for adjusting the parameters `n_iter` and `learning_rate`. As we will see in next section, this can be troublesome sometimes.
+An array `LL_record` is used to store the function value of $LL(\boldsymbol{\beta})$ after each iteration, which is useful for adjusting the parameters `n_iter` and `learning_rate`. Choosing appropriate `n_iter` and `learning_rate` is important for gradient descent:
+- if `learning_rate` is too high, $LL(\boldsymbol{\beta})$ is likely to go over the maximum and oscillate. 
+- if `learning_rate` is too low, $LL(\boldsymbol{\beta})$ will increase very slowly, which is inefficient.
+- for `n_iter`, it is best to choose a value that makes $LL(\boldsymbol{\beta})$ close enough to the maximum but small enough to reduce computational power needed.
 
 #### 1.5 Problems encountered and solutions
 
@@ -227,11 +230,18 @@ The log likelihood of my model **seemed** to have converged, but it was signifia
 
 I checked my $LL$ function and the `gradient_descent` function, but nothing was found. What else can be wrong?
 
-Well, as it turned out, the `n_iter` and `learning_rate` can be wrong. Prof. Huang solved this problem by increasing `n_iter` to 5,000,000.
+Well, as it turned out, the `n_iter` and `learning_rate` can be wrong. Prof. Huang increased `n_iter` to 5,000,000, and the problem was solved.
 
 ![LL comparison, large iter](Logistic_Regression/write/LL_large_iter.png)
 
+As he concluded, this gave some lessons:
+> 1) simple gradient can ensure a global minimal in this convex function, even though it can be very slow (the oscillation limits the larger learning rate).
+> 2) optimization is non-trivial, especially to be both efficient and accurate. Sk-learn uses a second-order method (a variant of Newton’s method). You can find it the chapter 8 in Murphy’s book: https://probml.github.io/pml-book/book1.html
+> 3) the complexity of the cost function is actually dataset specific. You may find that gradient descent can work well in some simpler datasets (oscillation is less like to happen). I remember last year students used sk-learn or statsmodel’s built-in data & it worked well.
 
+It also taught me not to trust solely on the graphs.
+
+Simple gradient descent is not an efficient efficient method for some datasets it seems.
 
 ### 2. Negative binomial regression
 
