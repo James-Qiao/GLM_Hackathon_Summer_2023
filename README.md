@@ -17,7 +17,9 @@ Data science works on GLM and scRNA-seq during summer intern 2023
       - [1.4 Gradient descent](#14-gradient-descent)
       - [1.5 Problems encountered and solutions](#15-problems-encountered-and-solutions)
     - [2. Negative binomial regression](#2-negative-binomial-regression)
+      - [2.1 Introduction to NB regression](#21-introduction-to-nb-regression)
     - [3. NB regression test on datasets](#3-nb-regression-test-on-datasets)
+      - [3.1](#31)
     - [4. Cell clustering and finding marker genes with scanpy](#4-cell-clustering-and-finding-marker-genes-with-scanpy)
   - [Part 3: Achievements](#part-3-achievements)
   - [Part 4: Future directions](#part-4-future-directions)
@@ -241,11 +243,50 @@ As he concluded, this gave some lessons:
 
 It also taught me not to trust solely on the graphs.
 
-Simple gradient descent is not an efficient efficient method for some datasets it seems.
+Simple gradient descent is not an efficient efficient method for some datasets as it seems. Other optimization methods can be found in these two books[^1][^2].
 
 ### 2. Negative binomial regression
 
+In this part, I implemented negative binomial regression by coding the log likelihood function and using a optimizer to find the parameters. As simple gradient descent was proved to be inefficient sometimes, the SciPy optimizer [scipy.optimize.minimize](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html) was used. The implemented model was compared with [statsmodels](https://www.statsmodels.org/stable/generated/statsmodels.discrete.discrete_model.NegativeBinomial.html).
+
+#### 2.1 Introduction to NB regression
+
+Both logistic regression and NB regression belongs to a family [generalized linear models (GLM)](https://en.wikipedia.org/wiki/Generalized_linear_model). Here's a very good introduction to GLM by CMU: https://www.stat.cmu.edu/~ryantibs/advmethods/notes/glm.pdf
+
+For NB regression, here are some key things:
+
+ **linear predictor:**
+   ```math
+   \eta = \boldsymbol{\beta^Tx} = \beta_1x_1 + \beta_2x_2 + ... + \beta_px_p
+   ```
+which is the same as logistic regression.
+
+The difference is, unlike logistic regression where $\mu = \eta$, NB regression has a link function that connects $\mu$, which is what we want to predict, to $\eta$.
+
+**link function:**
+```math
+g(\mu) = \eta
+```
+this also applies to other GLMs.
+
+For NB specifically, **link function:**
+```math
+g(\mu) =\log(\mu) = \eta
+```
+
+or put $\mu$ as a dependent variable,
+```math
+\mu = \exp(\eta) = \exp(\boldsymbol{\beta^Tx})
+```
+Another difference is, apart from $\boldsymbol{\beta}$, one more parameter is needed. This is because we assume $Y | X \sim NB(Y | \mu, \phi)$ where $E(Y) = \mu$ and $Var(Y) = \mu + \frac{\mu^2}{\phi}$.
+
+This extra parameter $\phi$ is called the **dispersion parameter**.
+
 ### 3. NB regression test on datasets
+
+#### 3.1 
+
+
 
 ### 4. Cell clustering and finding marker genes with scanpy
 ---
