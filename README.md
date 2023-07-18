@@ -1,4 +1,4 @@
-# GLM_Hackathon_Summer_2023
+# Summer Research Internship 2023
 
 Data science works on GLM and scRNA-seq during summer intern 2023
 
@@ -6,7 +6,7 @@ Data science works on GLM and scRNA-seq during summer intern 2023
 
 ## Contents
 
-- [GLM\_Hackathon\_Summer\_2023](#glm_hackathon_summer_2023)
+- [Summer Research Internship 2023](#summer-research-internship-2023)
   - [Contents](#contents)
   - [Part 1: Overview](#part-1-overview)
   - [Part 2: File documentations](#part-2-file-documentations)
@@ -18,6 +18,8 @@ Data science works on GLM and scRNA-seq during summer intern 2023
       - [1.5 Problems encountered and solutions](#15-problems-encountered-and-solutions)
     - [2. Negative binomial regression](#2-negative-binomial-regression)
       - [2.1 Introduction to NB regression](#21-introduction-to-nb-regression)
+      - [2.2 Log likelihood](#22-log-likelihood)
+      - [2.3 Optimizing the parameters](#23-optimizing-the-parameters)
     - [3. NB regression test on datasets](#3-nb-regression-test-on-datasets)
       - [3.1](#31)
     - [4. Cell clustering and finding marker genes with scanpy](#4-cell-clustering-and-finding-marker-genes-with-scanpy)
@@ -281,6 +283,52 @@ or put $\mu$ as a dependent variable,
 Another difference is, apart from $\boldsymbol{\beta}$, one more parameter is needed. This is because we assume $Y | X \sim NB(Y | \mu, \phi)$ where $E(Y) = \mu$ and $Var(Y) = \mu + \frac{\mu^2}{\phi}$.
 
 This extra parameter $\phi$ is called the **dispersion parameter**.
+
+It is worth noting that the **Poisson distribution** has very similar properties: $E(Y) = Var(Y) = \mu$. Compare this to NB distribution, it can be seen as a special case of NB where $\phi \to +\infty$, despite that they have different forms of PMF. After I implemented the NB model, I also compared it with the Poisson regression model, which proved this. More details can be found here: https://pulmonarychronicles.com/index.php/pulmonarychronicles/article/view/200/491
+
+#### 2.2 Log likelihood
+
+For NB regression, we also use the log likelihood function to estimate $\boldsymbol{\beta}$ and $\phi$, which is simply the product of $NB(y_i | \mu_i = \exp(\boldsymbol{\beta^Tx_i}), \phi)$ for all $y_i$ and $\boldsymbol{x_i}$.
+
+This is the ordinary PMF of NB distribution:
+```math
+\begin{split}
+f(k; r, p) \equiv Pr(X = k)
+& = \binom{k + r - 1}{k} \cdot (1 - p)^k p^r \\
+& = \frac{\Gamma(k + r)}{k! \Gamma(r)} \cdot (1 - p)^k p^r
+\end{split}
+```
+
+However, want to convert it to be a function of $\mu$ and $\phi$. Here's the alternative parameterization[^4]:
+```math
+\begin{split}
+f(\mu, \phi) \equiv NB(y | \mu, \phi)
+& = \binom{y + \phi - 1}{y}  (\frac{\mu}{\mu + \phi})^y (\frac{\phi}{\mu + \phi})^\phi \\
+& = \frac{\Gamma(y + \mu)}{y! \Gamma(\phi)} (\frac{\mu}{\mu + \phi})^y (\frac{\phi}{\mu + \phi})^\phi
+\end{split}
+```
+The log likelihood function therefore is:
+```math
+LL(\boldsymbol{\beta}, \phi) = \sum_{i=1}^{N} [\log(\frac{\Gamma(y_i + \mu_i)}{y_i! \Gamma(\phi)}) + y_i\log(\frac{\mu_i}{\mu_i + \phi}) + \phi \log(\frac{\phi}{\mu_i + \phi})]
+```
+
+And implement it in Python:
+```python
+def log_likelihood(self, params_phi): 
+
+    mu = np.exp(np.dot(self.X, params_phi[:-1]))
+    phi = params_phi[-1]
+    Y = self.Y
+    ll = np.sum(np.log((gamma(Y+phi)/((gamma(Y+1)*gamma(phi))))*((phi/(phi+mu))**phi)*((mu/(phi+mu))**Y)))
+    
+    return np.sum(ll) * -1 # negative log likelihood
+```
+
+[^4]: [Negative Binomial Distribution (alternative parameterization)](https://mc-stan.org/docs/2_20/functions-reference/nbalt.html)
+
+#### 2.3 Optimizing the parameters
+
+
 
 ### 3. NB regression test on datasets
 
